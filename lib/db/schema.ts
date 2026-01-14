@@ -18,6 +18,7 @@ export const quotes = sqliteTable("quotes", {
   price: real("price").notNull(),
   isEstimated: integer("is_estimated", { mode: "boolean" }).notNull().default(false),
   isAccepted: integer("is_accepted", { mode: "boolean" }).notNull().default(false),
+  date: integer("date", { mode: "timestamp" }),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull().default(new Date()),
 });
 
@@ -50,6 +51,15 @@ export const quoteTags = sqliteTable("quote_tags", {
   pk: primaryKey({ columns: [t.quoteId, t.tagId] }),
 }));
 
+export const quoteFiles = sqliteTable("quote_files", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  quoteId: integer("quote_id").notNull().references(() => quotes.id, { onDelete: 'cascade' }),
+  name: text("name").notNull(),
+  path: text("path").notNull(),
+  type: text("type").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull().default(new Date()),
+});
+
 export const expenseTags = sqliteTable("expense_tags", {
   expenseId: integer("expense_id").notNull().references(() => expenses.id, { onDelete: 'cascade' }),
   tagId: integer("tag_id").notNull().references(() => tags.id, { onDelete: 'cascade' }),
@@ -68,6 +78,11 @@ export const incomeTags = sqliteTable("income_tags", {
 export const quotesRelations = relations(quotes, ({ many }) => ({
   expenses: many(expenses),
   tags: many(quoteTags),
+  files: many(quoteFiles),
+}));
+
+export const quoteFilesRelations = relations(quoteFiles, ({ one }) => ({
+  quote: one(quotes, { fields: [quoteFiles.quoteId], references: [quotes.id] }),
 }));
 
 export const expensesRelations = relations(expenses, ({ one, many }) => ({

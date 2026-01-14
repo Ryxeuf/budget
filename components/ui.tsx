@@ -83,3 +83,38 @@ export const Label = ({ className, ...props }: React.LabelHTMLAttributes<HTMLLab
     {...props}
   />
 );
+
+export const Modal = ({ 
+  isOpen, 
+  onClose, 
+  title, 
+  children,
+  className
+}: { 
+  isOpen: boolean; 
+  onClose: () => void; 
+  title?: string; 
+  children: React.ReactNode;
+  className?: string;
+}) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+      <div className={cn("bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col", className)}>
+        <div className="flex items-center justify-between p-4 border-b">
+          <h3 className="text-lg font-bold text-slate-900">{title}</h3>
+          <button 
+            onClick={onClose}
+            className="p-1 hover:bg-slate-100 rounded-full transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5 text-slate-500"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+        <div className="flex-1 overflow-auto p-4">
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+};

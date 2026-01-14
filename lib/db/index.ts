@@ -8,7 +8,7 @@ const dbPath = process.env.DATABASE_URL || "sqlite.db";
 const sqlite = new Database(dbPath);
 export const db = drizzle(sqlite, { schema });
 
-// Run migrations on startup
-if (process.env.NODE_ENV === "production" || process.env.RUN_MIGRATIONS === "true") {
+// Run migrations on startup, but not during build
+if (process.env.RUN_MIGRATIONS === "true") {
   migrate(db, { migrationsFolder: path.join(process.cwd(), "drizzle") });
 }
